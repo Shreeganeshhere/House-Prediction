@@ -24,7 +24,7 @@ class ZipDataIngestor(DataIngestor):
             zip_ref.extractall("Extracted_data")
         
         # Get a list of extracted files and find the csv files 
-        extracted_files = os.listeddir("Extracted_data")
+        extracted_files = os.listdir("Extracted_data")
         csv_files = [f for f in extracted_files if f.endswith('.csv')]
 
         # Check if no csv files found
@@ -45,10 +45,22 @@ class ZipDataIngestor(DataIngestor):
 class DataIngestorFactory:
     @staticmethod
     def get_ingestor(file_path : str) -> DataIngestor:
-        "returns the appropriate data ingestor based on the file extension"\
+        "returns the appropriate data ingestor based on the file extension"
         file_extension = os.path.splitext(file_path)[1]
         if file_extension == '.zip':
             return ZipDataIngestor()
         else:
-            raise ValueError(f"No ingestor available for the file extension: {}")
+            raise ValueError(f"No ingestor available for the file extension: {file_extension}")
 
+
+if __name__ == "__main__":
+    file_path = "/Users/shreeganeshnayak/Github-projects/House-Prediction/data/archive.zip"
+    
+    # Retrieve the appropriate data ingestor
+    data_ingestor = DataIngestorFactory.get_ingestor(file_path)
+
+    # Ingest the data
+    df = data_ingestor.ingest(file_path)
+
+    # Display few rows of the dataframe
+    print(df.head())
