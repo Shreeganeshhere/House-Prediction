@@ -41,3 +41,14 @@ class ZipDataIngestor(DataIngestor):
         return df
 
        
+# Data ingestor factory
+class DataIngestorFactory:
+    @staticmethod
+    def get_ingestor(file_path : str) -> DataIngestor:
+        "returns the appropriate data ingestor based on the file extension"\
+        file_extension = os.path.splitext(file_path)[1]
+        if file_extension == '.zip':
+            return ZipDataIngestor()
+        else:
+            raise ValueError(f"No ingestor available for the file extension: {}")
+
