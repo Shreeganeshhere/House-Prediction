@@ -219,4 +219,5 @@ __marimo__/
 
 
 data
-Extracted_data
+Extracted_data__pycache__/
+*.pyc
