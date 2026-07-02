@@ -1,0 +1,28 @@
+stages:
+  ingest:
+    cmd: python src/data_ingestion.py
+    deps:
+      - src/data_ingestion.py
+    outs:
+      - data/raw/housing.csv
+
+  transform:
+    cmd: python src/transform.py
+    deps:
+      - src/transform.py
+      - data/raw/housing.csv
+      - params.yaml
+    outs:
+      - data/processed
+    
+  train:
+    cmd: python src/train.py
+    deps:
+      - data/processed
+      - src/train.py
+    outs:
+      - models/linear_regression.pkl
+    metrics:
+      - metrics.json:
+          cache: false
+  
