@@ -1,0 +1,56 @@
+schema: '2.0'
+stages:
+  ingest:
+    cmd: python src/data_ingestion.py
+    deps:
+    - path: src/data_ingestion.py
+      hash: md5
+      md5: 75fb04f3ae19df87d7121d6b2b47cdde
+      size: 783
+    outs:
+    - path: data/raw/housing.csv
+      hash: md5
+      md5: ca5b757f0729c68d74d05bf9d9ca8486
+      size: 1895154
+  transform:
+    cmd: python src/transform.py
+    deps:
+    - path: data/raw/housing.csv
+      hash: md5
+      md5: ca5b757f0729c68d74d05bf9d9ca8486
+      size: 1895154
+    - path: params.yaml
+      hash: md5
+      md5: 86da06e08bfbac9e549764628a0037f5
+      size: 42
+    - path: src/transform.py
+      hash: md5
+      md5: 5d454af89df67992bbc1de5f6354805f
+      size: 1468
+    outs:
+    - path: data/processed
+      hash: md5
+      md5: 8c20515c98af3d36e273c1262c72365e.dir
+      size: 1892247
+      nfiles: 4
+  train:
+    cmd: python src/train.py
+    deps:
+    - path: data/processed
+      hash: md5
+      md5: 8c20515c98af3d36e273c1262c72365e.dir
+      size: 1892247
+      nfiles: 4
+    - path: src/train.py
+      hash: md5
+      md5: 6abbdfe11ed76d356aa5604d7862ce8e
+      size: 1466
+    outs:
+    - path: metrics.json
+      hash: md5
+      md5: fdd1e18c0a2173addfcd60e7820f70f0
+      size: 60
+    - path: models/linear_regression.pkl
+      hash: md5
+      md5: 2d8fb2c0e0992a51359f7d007a7d8c23
+      size: 1079
