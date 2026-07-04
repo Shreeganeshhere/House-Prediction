@@ -21,7 +21,7 @@ stages:
       - data/processed
       - src/train.py
     outs:
-      - models/linear_regression.pkl
+      - models/models.pkl
     metrics:
       - metrics.json:
           cache: false

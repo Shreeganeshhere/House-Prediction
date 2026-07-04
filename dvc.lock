@@ -21,8 +21,8 @@ stages:
       size: 1895154
     - path: params.yaml
       hash: md5
-      md5: 86da06e08bfbac9e549764628a0037f5
-      size: 42
+      md5: 8a1dd9fb2274f4c02f0a91ffed3d9eef
+      size: 103
     - path: src/transform.py
       hash: md5
       md5: 5d454af89df67992bbc1de5f6354805f
@@ -43,14 +43,14 @@ stages:
       nfiles: 4
     - path: src/train.py
       hash: md5
-      md5: 6abbdfe11ed76d356aa5604d7862ce8e
-      size: 1466
+      md5: 099e60c81d9db6284a8da1ec8199b0c3
+      size: 3742
     outs:
     - path: metrics.json
       hash: md5
-      md5: fdd1e18c0a2173addfcd60e7820f70f0
-      size: 60
-    - path: models/linear_regression.pkl
+      md5: 689ea3a826f877dadd2a16fa186ff177
+      size: 30
+    - path: models/models.pkl
       hash: md5
-      md5: 2d8fb2c0e0992a51359f7d007a7d8c23
-      size: 1079
+      md5: 985399a4c8717a9e2f7d100729ba5c93
+      size: 475985
