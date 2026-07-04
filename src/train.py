@@ -84,22 +84,28 @@ def train(data_dir: str="data/processed", model_dir: str="models"):
 
     # Start the mlflow run
     with mlflow.start_run():
+        # Fit the pipeline on the training data
         pipeline.fit(x_train, y_train)
+        # Predict on the test data
         preds = pipeline.predict(x_test)
 
+        # Metrics for evaluation (Root Mean Squared Error and R2 Score)
         rmse = math.sqrt(mean_squared_error(y_test, preds))
         r2 = r2_score(y_test, preds)
         print(f"RMSE: {rmse: .4f}\tR2: {r2: .4f}")
 
+        # Log parameters, metrics and model to mlflow
         mlflow.log_params(params)
         mlflow.log_metric("rmse", rmse)
         mlflow.log_metric("r2", r2)
         mlflow.sklearn.log_model(pipeline, "pipeline",
-        skops_trusted_types=["xgboost.core.Booster", "xgboost.sklearn.XGBRegressor"])
+            skops_trusted_types=["xgboost.core.Booster", "xgboost.sklearn.XGBRegressor"])
 
+        # Save metrics to json file
         with open("metrics.json", "w") as f:
             json.dump({"rmse": round(rmse, 4), "r2": round(r2, 4)}, f)
 
+        # Save the pipeline to a pickle file    
         with open(f"{model_dir}/models.pkl", "wb") as f:
             joblib.dump(pipeline, f)
 
