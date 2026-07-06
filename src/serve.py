@@ -22,7 +22,7 @@ class Housefeatures(BaseModel):
     Longitude: float
 
 
-@app.get("/heath")
+@app.get("/health")
 def health():
     return {"status": "ok"}
 
