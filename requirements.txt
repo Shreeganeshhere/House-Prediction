@@ -144,7 +144,7 @@ requests-oauthlib==2.0.0
 rich==15.0.0
 ruamel.yaml==0.19.1
 scikit-learn==1.9.0
-scipy==1.18.0
+scipy==1.17.1
 scmrepo==3.6.2
 seaborn==0.13.2
 semver==3.0.4
