@@ -17,4 +17,4 @@ def test_predict():
     }
     response = client.post("/predict", json=payload)
     assert response.status_code == 200
-    assert "predicted_price" in response.json()
+    assert "Predicted_price" in response.json()

@@ -30,4 +30,4 @@ def health():
 def predict(features: Housefeatures):
     data = np.array(list(features.model_dump().values())).reshape(1, -1)
     prediction = pipeline.predict(data)
-    return {"Predicted_ price": round(float(prediction[0]), 4)}
+    return {"Predicted_price": round(float(prediction[0]), 4)}
