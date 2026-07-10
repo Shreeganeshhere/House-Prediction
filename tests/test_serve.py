@@ -16,5 +16,5 @@ def test_predict():
         "Latitude": 37.88, "Longitude": -122.23
     }
     response = client.post("/predict", json=payload)
-    assert response.status_coude == 200
+    assert response.status_code == 200
     assert "predicted_price" in response.json()
