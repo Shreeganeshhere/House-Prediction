@@ -1,0 +1,54 @@
+name: Train and Deploy
+
+on:
+    push:
+        branches: [main]
+
+jobs:
+    train-and-deploy:
+        runs-on: ubuntu-latest
+
+        steps:
+            - name: Checkout code
+              uses: actions/checkout@v3
+            
+            - name: Set up Python
+              uses: actions/setup-python@v4
+              with:
+                python-version: "3.11"
+            
+            - name: Install dependencies
+              run: pip install -r requirements.txt
+
+            - name: Run pipeline
+              run: dvc repro
+
+            - name: Run tests
+              run: pytest tests/ -v
+
+            - name: Auth to GCP
+              uses: google-github-actions/auth@v1
+              with:
+                workload_identity_provider: ${{ secrets.WIF_PROVIDER }}
+                service_account: ${{ secrets.WIF_SERVICE_ACCOUNT }}
+
+            - name: Set up gcloud
+              uses: google-github-actions/setup-gcloud@v1
+
+            - name: Configure Docker
+              run: gcloud auth configure-docker asia-south2-docker.pkg.dev
+
+            - name: Build and push Image
+              run: |
+                docker build -t asia-south2-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/house-price-repo/house-price-api:latest .
+                docker push asia-south2-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/house-price-repo/house-price-api:latest
+
+            - name: Deploy to Cloud Run
+              run: |
+                gcloud run deploy house-price-api \
+                    --image asia-south2-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/house-price-repo/house-price-api:latest \
+                    --platform managed \
+                    --region asia-south2 \
+                    --allow-unauthenticated \
+                    --port 8000
+
