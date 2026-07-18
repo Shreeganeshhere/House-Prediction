@@ -40,10 +40,21 @@ class Housefeatures(BaseModel):
 
 @app.get("/health")
 def health():
+    """
+    Returns ok if the API is running and the model is loaded
+    """
     return {"status": "ok"}
 
 @app.post("/predict")
 def predict(features: Housefeatures):
+    """
+    Accepts House features and returns the predicted price
+
+    Args:
+        features (Housefeatures): House features
+
+    Returns: The predicted price and latency seconds
+    """
     start = time.time()
 
     data = np.array([[*features.model_dump().values()]])
@@ -61,6 +72,9 @@ def predict(features: Housefeatures):
 
 @app.get("/metrics/summary")
 def metrics_summary():
+    """
+    Returns aggregated stats on predictions served since last startup
+    """
     if not prediction_log:
         return {"message": "No predictions yet"}
     
