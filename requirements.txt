@@ -117,6 +117,8 @@ pillow==12.2.0
 platformdirs==4.10.0
 pluggy==1.6.0
 prettytable==3.18.0
+prometheus-fastapi-instrumentator==8.0.2
+prometheus_client==0.25.0
 prompt_toolkit==3.0.52
 propcache==0.5.2
 proto-plus==1.28.0
@@ -144,7 +146,7 @@ requests-oauthlib==2.0.0
 rich==15.0.0
 ruamel.yaml==0.19.1
 scikit-learn==1.9.0
-scipy==1.17.1
+scipy==1.18.0
 scmrepo==3.6.2
 seaborn==0.13.2
 semver==3.0.4
@@ -174,7 +176,7 @@ vine==5.1.0
 voluptuous==0.16.0
 wcwidth==0.8.2
 Werkzeug==3.1.8
-xgboost==3.2.0
+xgboost==3.3.0
 yarl==1.24.2
 zc.lockfile==4.0
 zipp==4.1.0

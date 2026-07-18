@@ -1,16 +1,32 @@
 from typing import Any
-
-
 from fastapi import FastAPI
 from pydantic import BaseModel
 import joblib
 import numpy as np
+from contextlib import asynccontextmanager
+import time
+from prometheus_fastapi_instrumentator import Instrumentator
 
-app = FastAPI()
+ml_model = {}
+prediction_log = []
 
-with open("models/models.pkl", "rb") as f:
-    pipeline = joblib.load(f)
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    # Startup
+    with open("models/models.pkl", "rb") as f:
+        ml_model["pipeline"] = joblib.load(f)
+    print("Model loaded successfully")
+    
+    yield
+    
+    # Shutdown
+    ml_model.clear()
+    prediction_log.clear()
+    print("Model unloaded")
 
+app = FastAPI(lifespan=lifespan)
+
+Instrumentator().instrument(app).expose(app)
 class Housefeatures(BaseModel):
     MedInc: float
     HouseAge: float
@@ -28,6 +44,33 @@ def health():
 
 @app.post("/predict")
 def predict(features: Housefeatures):
-    data = np.array(list(features.model_dump().values())).reshape(1, -1)
-    prediction = pipeline.predict(data)
-    return {"Predicted_price": round(float(prediction[0]), 4)}
+    start = time.time()
+
+    data = np.array([[*features.model_dump().values()]])
+    prediction = float(ml_model["pipeline"].predict(data)[0])
+
+    latency = round(time.time() - start, 4)
+    prediction_log.append({
+        "prediction": round(prediction, 4),
+        "latency_seconds": latency
+    })
+
+    return {"predicted_price": round(prediction, 4),
+        "latency_seconds": latency
+    }
+
+@app.get("/metrics/summary")
+def metrics_summary():
+    if not prediction_log:
+        return {"message": "No predictions yet"}
+    
+    predictions = [p["prediction"] for p in prediction_log]
+    latencies   = [p["latency_seconds"] for p in prediction_log]
+    
+    return {
+        "total_predictions": len(prediction_log),
+        "avg_prediction": round(sum(predictions) / len(predictions), 4),
+        "min_prediction": round(min(predictions), 4),
+        "max_prediction": round(max(predictions), 4),
+        "avg_latency_seconds": round(sum(latencies) / len(latencies), 4),
+    }
